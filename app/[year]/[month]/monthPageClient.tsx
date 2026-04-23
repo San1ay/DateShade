@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import MonthGrid from "@/components/monthGrid";
-import MonthDetails from "@/components/monthDetails"; // Import the new details component
+import ZodiacSection from "@/components/zodiacSection";
+import EventsSection from "@/components/eventsSection"; // Imported the new events component
 import { MONTHS } from "@/utils/constants";
 
 // Helper to format exact Years and Months difference
@@ -64,16 +65,17 @@ export default function MonthPageClient({ year, month }: { year: number; month: 
     return (
         <div style={{ minHeight: "100dvh", padding: "1rem", fontFamily: "Georgia, serif" }}>
 
-            {/* CSS Grid for the 1/3 and 2/3 layout */}
+            {/* CSS Grid for the layout */}
             <style>{`
                 .month-layout-grid {
                     display: grid;
                     grid-template-columns: 1fr; /* Stacks on mobile */
-                    gap: 2rem;
+                    gap: 3rem; /* Increased gap slightly for better separation */
                 }
                 @media (min-width: 768px) {
                     .month-layout-grid {
-                        grid-template-columns: 1fr 2fr; /* 1/3 and 2/3 split on larger screens */
+                        /* Changed from 1fr 2fr to 1fr 2.5fr to make the calendar column smaller */
+                        grid-template-columns: 1fr 2.5fr; 
                         align-items: start;
                     }
                 }
@@ -125,19 +127,21 @@ export default function MonthPageClient({ year, month }: { year: number; month: 
             {/* Split Content Area */}
             <div className="month-layout-grid">
 
-                {/* Left Side: 1/3 Calendar Grid */}
-                <div>
+                {/* Left Side: Calendar & Events Sidebar */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
                     <MonthGrid
                         year={year}
                         month={month}
                         monthName={MONTHS[month - 1]}
                         today={today}
                     />
+
+                    <EventsSection year={year} month={month} />
                 </div>
 
-                {/* Right Side: 2/3 Details Section */}
+                {/* Right Side: Zodiac Gallery */}
                 <div>
-                    <MonthDetails year={year} month={month} />
+                    <ZodiacSection year={year} month={month} />
                 </div>
 
             </div>
