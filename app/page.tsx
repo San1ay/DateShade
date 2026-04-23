@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import MonthGrid from "@/components/monthGrid";
+import Link from "next/link";
+import { MONTHS } from "@/utils/constants";
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const INITIAL_RANGE = 5;
 
 function yearLabel(year: number, currentYear: number) {
@@ -72,7 +73,9 @@ export default function Home() {
           style={{ marginBottom: "4rem", scrollMarginTop: "1rem" }}
         >
           <h2 style={{ fontSize: "1.5rem", fontWeight: 300, letterSpacing: "0.2em", marginBottom: "2rem", opacity: year === currentYear ? 0.9 : 0.5 }}>
-            {year}{" "}
+            <Link href={`/${year}`} style={{ textDecoration: "none", color: "inherit", borderBottom: "1px dashed currentColor" }}>
+              {year}
+            </Link>
             <span style={{ fontSize: "0.65rem", letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.5 }}>
               {yearLabel(year, currentYear)}
             </span>

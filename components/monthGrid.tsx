@@ -1,8 +1,8 @@
 import Link from "next/link";
 import getDayPalette from "@/lib/getDayDetails";
 import DayCell from "./dayCell";
+import { DAYS } from "@/utils/constants";
 
-const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 export default function MonthGrid({
     month,
