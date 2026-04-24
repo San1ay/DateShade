@@ -4,6 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { MONTHS } from "@/utils/constants";
 import EventsSection from "@/components/eventsSection";
 import ZodiacSection from "@/components/zodiacSection";
+import OnThisDaySection from "@/components/onThisDaySection";
 
 function formatDateLabel(year: number, month: number, day: number) {
     const date = new Date(year, month - 1, day);
@@ -26,6 +27,12 @@ export default function DayPageClient() {
     const years = Array.from({ length: 21 }, (_, i) => 2020 + i);
     const daysInMonth = new Date(year, month, 0).getDate();
     const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+    // Date comparison to hide "On This Day" for future dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize time to midnight for accurate day comparison
+    const requestedDate = new Date(year, month - 1, day);
+    const isFutureDate = requestedDate > today;
 
     // Navigation: Moves day by delta and handles month/year rollovers automatically
     const navigateDay = (delta: number) => {
@@ -164,11 +171,19 @@ export default function DayPageClient() {
 
             <div className="day-layout-grid">
                 <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
+                    {/* Guardian News Component */}
+                    {!isFutureDate && (
+                        <div style={{ opacity: 0.8 }}>
+                            <h2 style={{ fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1.5rem', fontWeight: 400 }}>
+                                World News
+                            </h2>
+                            <EventsSection year={year} month={month} day={day} />
+                        </div>
+                    )}
+
+                    {/* Wikipedia History Component - Only renders if date is NOT in the future */}
                     <div style={{ opacity: 0.8 }}>
-                        <h2 style={{ fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1.5rem', fontWeight: 400 }}>
-                            On This Day
-                        </h2>
-                        <EventsSection year={year} month={month} day={day} />
+                        <OnThisDaySection month={month} day={day} />
                     </div>
                 </div>
 
