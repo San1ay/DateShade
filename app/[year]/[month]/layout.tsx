@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import hexToRgba from "@/utils/hexToRgba";
 import getCurrentDateDetails from "@/lib/getCurrentDateDetails";
 import isValidDate from "@/utils/isValidDate";
+import NoDataFound from "@/components/noData";
 
 export async function generateMetadata({
     params,
@@ -30,7 +31,7 @@ export default async function MonthLayout({
     const m = Number(month);
     const d = Number(day);
 
-    if (!isValidDate(y, m, d)) return <div>No data found for this date.</div>;
+    if (!isValidDate(y, m, d)) return <NoDataFound />;
 
     const dateData = getCurrentDateDetails(y, m, d);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { format, intervalToDuration, formatDuration, addDays, subDays, isSameDay } from "date-fns";
 import { MONTHS } from "@/utils/constants";
 import EventsSection from "@/components/eventsSection";
@@ -37,13 +37,8 @@ function formatRelativeDateLabel(year: number, month: number, day: number) {
     return `— ${dayName}, ${durationStr} ${isFuture ? "from now" : "ago"}`;
 }
 
-export default function DayPageClient() {
+export default function DayPageClient({ year, month, day }: { year: number; month: number, day: number }) {
     const router = useRouter();
-    const params = useParams();
-
-    const year = Number(params.year);
-    const month = Number(params.month);
-    const day = Number(params.day);
 
     const years = Array.from({ length: 51 }, (_, i) => 2000 + i);
     const daysInMonth = new Date(year, month, 0).getDate();
