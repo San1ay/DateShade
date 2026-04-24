@@ -28,7 +28,7 @@ export default function EventsSection({ year, month, day }: { year: number; mont
 
                 const searchParams = new URLSearchParams(paramsObj).toString();
 
-                const res = await fetch(`/api/events?${searchParams}`);
+                const res = await fetch(`/api/news?${searchParams}`);
                 const data = await res.json();
 
                 if (isMounted) {

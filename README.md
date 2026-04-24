@@ -24,11 +24,13 @@ DateShade is a beautifully crafted, minimalist Next.js application that transfor
 - **Framework:** [Next.js](https://nextjs.org/) (App Router)
 - **Language:** TypeScript
 - **Styling:** Standardized Inline CSS & Modular Components
-- **APIs:** Wikipedia REST API (History), Local Deterministic Hashing (Zodiac)
+- **APIs:** - 
+    - ***The Guardian API:*** Real-time and historical news headlines.
+    - ***Wikipedia REST API:*** Historical "On This Day" data.
 
 ## 💻 Getting Started
 
-First, install the dependencies:
+Install dependencies:
 
 ```bash
 npm install
@@ -36,3 +38,43 @@ npm install
 yarn install
 # or
 pnpm install
+```
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the root directory:
+
+Add:
+
+```env
+# The Guardian API (Optional, return empty result if not provided)
+GUARDIAN_API_KEY=your_guardian_api_key
+```
+
+### API Setup
+
+* **The Guardian API:** [https://open-platform.theguardian.com/access/](https://open-platform.theguardian.com/access/)
+* **Wikipedia API:** No API key required.
+
+
+## Run Locally
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000` in your browser.
+
+## 🤝 Contributing
+
+Contributions are always welcome! If you have ideas to make **DateShade** more meaningful, beautiful, or interactive, feel free to contribute.
+
+Love contributions for:
+
+* New date-based features
+* Additional astrology integrations
+* More historical/event data sources
+* Better social sharing capabilities
+* UI/UX enhancements
+* Performance improvements
+* Accessibility improvements

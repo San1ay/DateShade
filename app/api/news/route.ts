@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
-    // 1. Extract params - .get() returns null if not present
+    // 1. Extract params
     const year = searchParams.get("year");
     const month = searchParams.get("month");
     const day = searchParams.get("day");
@@ -17,25 +17,32 @@ export async function GET(request: Request) {
     const requestedMonth = month ? Number(month) : null;
     const requestedDay = day ? Number(day) : null;
 
-    // 2. Granular Future Date Check
+    // 2. Future Date Check
     const now = new Date();
     const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-    // Construct a date object for the requested time (default to 1st of month if no day)
     const targetDate = new Date(
         requestedYear,
         requestedMonth ? requestedMonth - 1 : 0,
         requestedDay || 1
     );
 
+    // 3. Construct empty response helper
+    const emptyResponse = {
+        response: { status: "ok", total: 0, results: [] }
+    };
+
+    // Return empty if it's a future date
     if (targetDate > todayDate) {
-        return NextResponse.json({
-            response: { status: "ok", total: 0, results: [] }
-        });
+        return NextResponse.json(emptyResponse);
     }
 
-    // 3. Construct Guardian API Dates strictly
+    // 4. API Key Check
     const apiKey = process.env.GUARDIAN_API_KEY;
+    if (!apiKey) {
+        console.warn("GUARDIAN_API_KEY is missing in environment variables. Returning empty results.");
+        return NextResponse.json(emptyResponse);
+    }
+
     let startDate: string;
     let endDate: string;
 
@@ -65,7 +72,9 @@ export async function GET(request: Request) {
         );
 
         if (!res.ok) {
-            throw new Error(`Guardian API error: ${res.status}`);
+            // Log the error but return empty to keep the UI clean
+            console.error(`Guardian API responded with ${res.status}`);
+            return NextResponse.json(emptyResponse);
         }
 
         const data = await res.json();
@@ -77,6 +86,7 @@ export async function GET(request: Request) {
         });
     } catch (err) {
         console.error("Guardian Fetch Error:", err);
-        return NextResponse.json({ error: "Failed to fetch news" }, { status: 500 });
+        // Fallback to empty response on network failure
+        return NextResponse.json(emptyResponse);
     }
 }
