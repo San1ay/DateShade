@@ -8,7 +8,7 @@ interface Event {
     date: string;
 }
 
-export default function EventsSection({ year, month }: { year: number; month: number }) {
+export default function EventsSection({ year, month, day }: { year: number; month?: number, day?: number }) {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -18,7 +18,17 @@ export default function EventsSection({ year, month }: { year: number; month: nu
 
         const fetchEvents = async () => {
             try {
-                const res = await fetch(`/api/events?year=${year}&month=${month}`);
+                const paramsObj = Object.fromEntries(
+                    Object.entries({
+                        year: year?.toString(),
+                        month: month ? month.toString() : '',
+                        day: day ? day?.toString() : ''
+                    }).filter(([_, value]) => value !== '')
+                );
+
+                const searchParams = new URLSearchParams(paramsObj).toString();
+
+                const res = await fetch(`/api/events?${searchParams}`);
                 const data = await res.json();
 
                 if (isMounted) {

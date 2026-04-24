@@ -1,37 +1,67 @@
 import { NextResponse } from "next/server";
 
-// REMOVED: export const dynamic = 'force-static'; 
-// We want this to be dynamic so it can read the URL params, 
-// but the FETCH itself will be cached forever.
-
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
+
+    // 1. Extract params - .get() returns null if not present
     const year = searchParams.get("year");
     const month = searchParams.get("month");
+    const day = searchParams.get("day");
 
-    // This check will now only fail if the client actually forgets to send params
-    if (!year || !month) {
-        return NextResponse.json({ error: "Missing year or month" }, { status: 400 });
+    // Strict validation: Year is always required
+    if (!year) {
+        return NextResponse.json({ error: "Year is required" }, { status: 400 });
     }
 
+    const requestedYear = Number(year);
+    const requestedMonth = month ? Number(month) : null;
+    const requestedDay = day ? Number(day) : null;
+
+    // 2. Granular Future Date Check
+    const now = new Date();
+    const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    // Construct a date object for the requested time (default to 1st of month if no day)
+    const targetDate = new Date(
+        requestedYear,
+        requestedMonth ? requestedMonth - 1 : 0,
+        requestedDay || 1
+    );
+
+    if (targetDate > todayDate) {
+        return NextResponse.json({
+            response: { status: "ok", total: 0, results: [] }
+        });
+    }
+
+    // 3. Construct Guardian API Dates strictly
     const apiKey = process.env.GUARDIAN_API_KEY;
+    let startDate: string;
+    let endDate: string;
 
-    // Ensure month is 2 digits for the Guardian API
-    const formattedMonth = month.padStart(2, '0');
-    const startDate = `${year}-${formattedMonth}-01`;
-
-    // Calculate last day of the month
-    const lastDay = new Date(Number(year), Number(month), 0).getDate();
-    const endDate = `${year}-${formattedMonth}-${lastDay}`;
+    if (requestedYear && requestedMonth && requestedDay) {
+        // EXACT DAY MODE
+        const fMonth = month!.padStart(2, '0');
+        const fDay = day!.padStart(2, '0');
+        startDate = `${year}-${fMonth}-${fDay}`;
+        endDate = startDate;
+    } else if (requestedYear && requestedMonth) {
+        // FULL MONTH MODE
+        const fMonth = month!.padStart(2, '0');
+        startDate = `${year}-${fMonth}-01`;
+        const lastDay = new Date(requestedYear, requestedMonth, 0).getDate();
+        endDate = `${year}-${fMonth}-${lastDay}`;
+    } else {
+        // FULL YEAR MODE
+        startDate = `${year}-01-01`;
+        endDate = `${year}-12-31`;
+    }
 
     try {
+        // Use 'force-cache' for historical data
         const res = await fetch(
             `https://content.guardianapis.com/search?from-date=${startDate}&to-date=${endDate}&section=world&order-by=relevance&api-key=${apiKey}`,
-            {
-                // This ensures that once April 2024 is fetched, 
-                // it is stored on the server disk forever.
-                cache: 'force-cache',
-            }
+            { cache: 'force-cache' }
         );
 
         if (!res.ok) {
