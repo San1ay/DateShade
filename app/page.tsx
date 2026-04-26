@@ -181,7 +181,6 @@ export default function Home() {
                 month={mi + 1}
                 monthName={MONTHS[mi]}
                 year={year}
-                today={today}
               />
             ))}
           </div>

@@ -99,7 +99,6 @@ export default function YearPageClient({ year, today }: { year: number; today: D
                                     month={mi + 1}
                                     monthName={MONTHS[mi]}
                                     year={year}
-                                    today={today}
                                 />
                             </div>
                         ))}

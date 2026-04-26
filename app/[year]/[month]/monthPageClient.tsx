@@ -169,7 +169,7 @@ export default function MonthPageClient({ year, month }: { year: number; month: 
 
             <div className="month-layout-grid">
                 <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
-                    <MonthGrid year={year} month={month} monthName={MONTHS[month - 1]} today={today} />
+                    <MonthGrid year={year} month={month} monthName={MONTHS[month - 1]} />
                     <EventsSection year={year} month={month} />
                 </div>
 
