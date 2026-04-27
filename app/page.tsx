@@ -5,6 +5,7 @@ import MonthGrid from "@/components/monthGrid";
 import { MONTHS } from "@/utils/constants";
 import ScrollYearSelector from "@/components/ScrollYearSelector";
 import { useRouter } from "next/navigation";
+import BackgroundWrapper from "@/providers/todayBgProvider";
 
 const INITIAL_RANGE = 5;
 
@@ -59,8 +60,9 @@ export default function Home() {
   };
 
   return (
-    <div style={{ minHeight: "100dvh", padding: "1rem", fontFamily: "Georgia, serif" }}>
-      <style>{`
+    <BackgroundWrapper>
+      <div style={{ minHeight: "100dvh", padding: "1rem", fontFamily: "Georgia, serif" }}>
+        <style>{`
         .calendar-grid {
           display: grid;
           grid-template-columns: repeat(1, 1fr);
@@ -83,111 +85,113 @@ export default function Home() {
         }
       `}</style>
 
-      {/* Fixed Year Overview Form */}
-      <form
-        onSubmit={handleCheckYear}
-        style={{
-          position: "fixed",
-          top: "1rem",
-          right: "1rem",
-          zIndex: 50,
-          display: "flex",
-          alignItems: "center",
-          gap: "0.5rem",
-          padding: "0.5rem",
-          borderRadius: "8px",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
-        }}
-      >
-        <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.4 }}>
-          Check Year Overview
-        </span>
-        <input
-          name="year"
-          type="number"
-          defaultValue={currentYear}
-          className="no-spinners"
+        {/* Fixed Year Overview Form */}
+        <form
+          onSubmit={handleCheckYear}
           style={{
-            fontSize: "1rem",
-            background: "transparent",
-            border: "none",
-            borderBottom: "1px solid currentColor",
-            outline: "none",
-            width: "3.5rem",
-            fontFamily: "inherit",
-            textAlign: "center",
-            opacity: 0.8,
-          }}
-        />
-        <button
-          type="submit"
-          style={{
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            opacity: 0.6,
-            fontFamily: "inherit",
-            fontSize: "1rem",
+            position: "fixed",
+            top: "1rem",
+            right: "1rem",
+            zIndex: 50,
             display: "flex",
             alignItems: "center",
-            padding: "0"
+            gap: "0.5rem",
+            padding: "0.5rem",
+            borderRadius: "8px",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
           }}
-          aria-label="Go"
         >
-          &rarr;
-        </button>
-      </form>
-
-      <div ref={topSentinelRef} style={{ height: "1px" }} />
-
-      {years.map(year => (
-        <section
-          key={year}
-          id={`year-${year}`}
-          ref={year === currentYear ? currentYearRef : null}
-          style={{ marginBottom: "4rem", scrollMarginTop: "1rem" }}
-        >
-          <h2
+          <span style={{ fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.4 }}>
+            Check Year Overview
+          </span>
+          <input
+            name="year"
+            type="number"
+            defaultValue={currentYear}
+            className="no-spinners"
             style={{
+              fontSize: "1rem",
+              background: "transparent",
+              border: "none",
+              borderBottom: "1px solid currentColor",
+              outline: "none",
+              width: "3.5rem",
+              fontFamily: "inherit",
+              textAlign: "center",
+              opacity: 0.8,
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              opacity: 0.6,
+              fontFamily: "inherit",
+              fontSize: "1rem",
               display: "flex",
               alignItems: "center",
-              gap: "0.75rem",
-              fontSize: "1.5rem",
-              fontWeight: 300,
-              letterSpacing: "0.2em",
-              marginBottom: "2rem",
-              opacity: year === currentYear ? 0.9 : 0.5
+              padding: "0"
             }}
+            aria-label="Go"
           >
-            <ScrollYearSelector currentYear={year} />
+            &rarr;
+          </button>
+        </form>
 
-            <span
+        <div ref={topSentinelRef} style={{ height: "1px" }} />
+
+        {years.map(year => (
+          <section
+            key={year}
+            id={`year-${year}`}
+            ref={year === currentYear ? currentYearRef : null}
+            style={{ marginBottom: "4rem", scrollMarginTop: "1rem" }}
+          >
+            <h2
               style={{
-                fontSize: "0.65rem",
-                letterSpacing: "0.3em",
-                textTransform: "uppercase",
-                opacity: 0.5
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                fontSize: "1.5rem",
+                fontWeight: 300,
+                letterSpacing: "0.2em",
+                marginBottom: "2rem",
+                opacity: year === currentYear ? 0.9 : 0.5
               }}
             >
-              {yearLabel(year, currentYear)}
-            </span>
-          </h2>
+              <ScrollYearSelector currentYear={year} />
 
-          <div className="calendar-grid">
-            {Array.from({ length: 12 }, (_, mi) => (
-              <MonthGrid
-                key={mi}
-                month={mi + 1}
-                monthName={MONTHS[mi]}
-                year={year}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
+              <span
+                style={{
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.3em",
+                  textTransform: "uppercase",
+                  opacity: 0.5
+                }}
+              >
+                {yearLabel(year, currentYear)}
+              </span>
+            </h2>
 
-      <div ref={bottomSentinelRef} style={{ height: "1px" }} />
-    </div>
+            <div className="calendar-grid">
+              {Array.from({ length: 12 }, (_, mi) => (
+                <MonthGrid
+                  key={mi}
+                  month={mi + 1}
+                  monthName={MONTHS[mi]}
+                  year={year}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
+
+        <div ref={bottomSentinelRef} style={{ height: "1px" }} />
+      </div>
+    </BackgroundWrapper>
+
   );
 }

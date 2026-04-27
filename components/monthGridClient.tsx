@@ -57,7 +57,7 @@ export default function MonthGridClient({
                 {Array.from({ length: daysInMonth }, (_, di) => {
                     const day = di + 1;
                     const value = getDayPalette(year, month, day);
-                    const isToday = today.getMonth() + 1 === month && today.getDate() === day;
+                    const isToday = today.getMonth() + 1 === month && today.getDate() === day && today.getFullYear() === year;
 
                     return (
                         <Link key={day} prefetch={false} href={`/${year}/${String(month).padStart(2, "0")}/${String(day).padStart(2, "0")}`} style={{ textDecoration: "none" }}>
